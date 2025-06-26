@@ -5,4 +5,6 @@ export interface Message {
   phoneNumber: string;
   productUrl: string;
   status: string;
+  template_name: string;
+  parameters: { name: string; value: string }[];
 }

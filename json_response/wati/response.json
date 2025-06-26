@@ -1,0 +1,27 @@
+{
+    "result": true,
+    "error": null,
+    "templateName": "order_placed_successful",
+    "receivers": [
+        {
+            "localMessageId": "f4c75e67-a000-4775-80d0-eff93b96f199",
+            "waId": "919898989898",
+            "isValidWhatsAppNumber": true,
+            "errors": []
+        }
+    ],
+    "parameters": [
+        {
+            "name": "name",
+            "value": "Dibakar Chakraborty"
+        },
+        {
+            "name": "order_number",
+            "value": "Your Order Number 123455"
+        },
+        {
+            "name": "order_status_url_partial_variable",
+            "value": "https://dev.theluxuryhut.com/shop/product/rolex-submariner-date-bluesy-40-blue-dial-116613lb-2020"
+        }
+    ]
+}

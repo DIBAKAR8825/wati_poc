@@ -1,4 +1,3 @@
-// routes.ts
 import express, { Request, Response, NextFunction } from 'express';
 import { SendMessageUseCase } from '../application/SendMessageUseCase';
 import { WatiMessageService } from '../infrastructure/WatiMessageService';
@@ -6,13 +5,11 @@ import { Message } from '../domain/Message';
 
 const router = express.Router();
 
-// Handles POST /send-message request
 const handleSendMessage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { name, orderNumber, phoneNumber, productUrl, status } = req.body;
+    const { name, orderNumber, phoneNumber, productUrl, status, template_name, parameters } = req.body;
 
-    // Basic validation
-    if (!name || !orderNumber || !phoneNumber || !productUrl || !status) {
+    if (!name || !orderNumber || !phoneNumber || !productUrl || !status || !template_name || !parameters) {
       res.status(400).json({ error: 'Missing required fields' });
       return;
     }
@@ -22,7 +19,9 @@ const handleSendMessage = async (req: Request, res: Response, next: NextFunction
       orderNumber,
       phoneNumber,
       productUrl,
-      status
+      status,
+      template_name,
+      parameters
     };
 
     const useCase = new SendMessageUseCase(new WatiMessageService());
@@ -34,12 +33,10 @@ const handleSendMessage = async (req: Request, res: Response, next: NextFunction
       res.status(200).json({ message: `Message not sent. Order status is '${status}'.` });
     }
   } catch (err: any) {
-    console.error('Unexpected error in send-message:', err);
+    console.error('Unexpected error:', err);
     res.status(500).json({ error: err.message || 'Internal Server Error' });
   }
 };
 
-// Register the route
 router.post('/send-message', handleSendMessage);
-
 export default router;
