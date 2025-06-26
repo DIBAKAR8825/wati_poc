@@ -50,7 +50,7 @@ wati_project/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/DIBAKAR8825/wati_poc
+git clone https://github.com/DIBAKAR8825/wati_poc.git
 cd wati_project
 ```
 
