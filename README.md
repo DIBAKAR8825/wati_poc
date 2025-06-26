@@ -1,52 +1,58 @@
-# WATI WhatsApp Integration – Node.js (DDD + TypeScript)
+# 📦 WATI WhatsApp Messaging Integration (Node.js + TypeScript + DDD)
 
-This project integrates the **WATI WhatsApp API** into a TypeScript-based Node.js app following **Domain-Driven Design (DDD)** principles. WhatsApp messages are sent automatically when the order status is `"SUCCESS"` using an approved WATI template.
+This project is a clean, modular implementation for sending **WhatsApp template messages via WATI API** based on order status updates using **Domain-Driven Design (DDD)** in **Node.js** with **TypeScript**.
 
----
-
-## Features
-
-- Integration with [WATI](https://wati.io/) for WhatsApp messaging
-- Clean architecture using DDD (Domain, Application, Infrastructure, Interface)
-- Validates order status before sending
-- Easy configuration via `.env` file
-- Secure API token usage
+Messages are only sent when the order status is `SUCCESS`.
 
 ---
 
-## Folder Structure
+## ✅ Features
+
+- 📐 Follows **Domain-Driven Design (DDD)** for clear separation of concerns.
+- 🔐 Uses **environment variables** to store sensitive credentials securely.
+- 🚀 Fully functional **REST API** endpoint to trigger WhatsApp messages.
+- 🔄 Supports **multiple WATI templates** (`order_placed_successful`, `order_details`).
+- 📄 Clean, readable, and maintainable code with comments and best practices.
+
+---
+
+## 📁 Project Structure
 
 ```
-src/
-├── api/                  # Route handlers
-│   └── routes.ts
-├── application/          # Use cases
-│   └── SendMessageUseCase.ts
-├── config/               # Environment setup
-│   └── config.ts
-├── constants/            # Shared constants & env keys
-│   └── constants.ts
-├── domain/               # Domain model
-│   └── Message.ts
-├── infrastructure/       # WATI implementation
-│   └── WatiMessageService.ts
-├── interfaces/           # Interface contracts
-│   └── IMessageService.ts
-└── main.ts               # App entry point
+wati_project/
+├── src/
+│   ├── api/                 # Express route handlers
+│   │   └── routes.ts
+│   ├── application/         # Business use cases
+│   │   └── SendMessageUseCase.ts
+│   ├── config/              # Environment config loader
+│   │   └── config.ts
+│   ├── constants/           # Constants for headers, env keys
+│   │   └── constants.ts
+│   ├── domain/              # Domain entities
+│   │   └── Message.ts
+│   ├── infrastructure/      # External WATI integration
+│   │   └── WatiMessageService.ts
+│   ├── interfaces/          # Interface contracts
+│   │   └── IMessageService.ts
+│   └── main.ts              # Entry point (Express server)
+├── .env                     # Environment variables
+├── .gitignore
+├── package.json
+├── tsconfig.json
+└── README.md
 ```
 
 ---
 
-## Setup Instructions
+## 📦 Setup Instructions
 
-### 1. Clone the Project
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/wati-whatsapp-integration.git
-cd wati-whatsapp-integration
+git clone https://github.com/your-username/wati_project.git
+cd wati_project
 ```
-
----
 
 ### 2. Install Dependencies
 
@@ -54,80 +60,144 @@ cd wati-whatsapp-integration
 npm install
 ```
 
----
+### 3. Configure Environment Variables
 
-### 3. Setup `.env`
-
-Create a `.env` file in the root and add the following values:
+Create a `.env` file at the root and add:
 
 ```env
-# WATI API configuration
-WATI_API_URL=<your_wati_url>
-WATI_ENV_KEY=<your_wati_bearer_token>
-
-# Template names (must match your approved templates)
-WATI_TEMPLATE_1 = created and approved templated at wait
-WATI_TEMPLATE_2 = created and approved templated at wait
-
-# Business rule
+WATI_API_URL=https://live-mt-server.wati.io/your-tenant-id
+WATI_ENV_KEY=your-wati-auth-token
+WATI_TEMPLATE_1=order_placed_successful
+WATI_TEMPLATE_2=order_details
 ORDER_STATUS=SUCCESS
-
-# Server port
 PORT=3333
 ```
 
->Replace `<your_wati_bearer_token>` with your actual WATI API token.
+> 🔒 Keep your `.env` file secret and **do not commit** it to Git.
 
----
-
-## Running the Server
+### 4. Run the Server
 
 ```bash
 npx ts-node src/main.ts
 ```
 
-You should see:
-
-```
-Server running at http://localhost:3333
-```
+> You should see:  
+> `🚀 Server running at http://localhost:3333`
 
 ---
 
-## API Usage
+## 🔄 API Usage
 
 ### Endpoint
 
-`POST /api/send-message`
+```
+POST /api/send-message
+Content-Type: application/json
+```
+---
 
-### Request Body (JSON)
+
+### ✅ Payload (Template- order_placed_successful)
 
 ```json
 {
   "name": "Dibakar Chakraborty",
-  "orderNumber": "5123455",
-  "phoneNumber": "919656565650",
-  "productUrl": "https://dev.theluxuryhut.com/shop/product/rolex",
-  "status": "SUCCESS"
+  "orderNumber": "123455",
+  "phoneNumber": "919293949596",
+  "productUrl": "https://dev.theluxuryhut.com/shop/product/rolex-submariner-date-bluesy-40-blue-dial-116613lb-2020",
+  "status": "SUCCESS",
+  "template_name": "order_placed_successful",
+  "parameters": [
+    { "name": "name", "value": "Dibakar Chakraborty" },
+    { "name": "order_number", "value": "Your Order Number 123455" },
+    {
+      "name": "order_status_url_partial_variable",
+      "value": "//dev.theluxuryhut.com/shop/product/rolex-submariner-date-bluesy-40-blue-dial-116613lb-2020"
+    }
+  ]
 }
 ```
 
-> The message will only be sent if `"status"` is `"SUCCESS"`.
+- `status` must be `"SUCCESS"` to trigger the message.
+- `template_name` must match your approved template on WATI (`WATI_TEMPLATE_1` or `WATI_TEMPLATE_2`).
+- The request body dynamically adjusts to match the required parameters for the selected template.
 
 ---
 
-### Sample CURL
+## 🧪 Testing cURL Example (Template- order_placed_successful)
 
 ```bash
-curl -X POST http://localhost:3333/api/send-message -H "Content-Type: application/json" -d '{
+curl --location 'http://localhost:3333/api/send-message' \
+--header 'Content-Type: application/json' \
+--data '{
   "name": "Dibakar Chakraborty",
-  "orderNumber": "5123455",
-  "phoneNumber": "919656565650",
-  "productUrl": "https://dev.theluxuryhut.com/shop/product/rolex",
-  "status": "SUCCESS"
+  "orderNumber": "123455",
+  "phoneNumber": "919293949596",
+  "productUrl": "https://dev.theluxuryhut.com/shop/product/rolex-submariner-date-bluesy-40-blue-dial-116613lb-2020",
+  "status": "SUCCESS",
+  "template_name": "order_placed_successful",
+  "parameters": [
+    { "name": "name", "value": "Dibakar Chakraborty" },
+    { "name": "order_number", "value": "Your Order Number 123455" },
+    {
+      "name": "order_status_url_partial_variable",
+      "value": "//dev.theluxuryhut.com/shop/product/rolex-submariner-date-bluesy-40-blue-dial-116613lb-2020"
+    }
+  ]
 }'
 ```
 
+### ✅ Payload (Template- order_details)
+
+```json
+{
+  "name": "Dibakar Chakraborty",
+  "orderNumber": "123455",
+  "phoneNumber": "919293949596",
+  "productUrl": "https://dev.theluxuryhut.com/shop/product/rolex-submariner-date-bluesy-40-blue-dial-116613lb-2020",
+  "status": "SUCCESS",
+  "template_name": "order_details",
+  "parameters": [
+    { "name": "name", "value": "Dibakar Chakraborty" },
+    { "name": "order_number", "value": "Your Order Number 123455" },
+    { "name": "wc_adv_shipment", "value": "hShipment-number-1234566890" },
+    {
+      "name": "order_status_url_partial_variable",
+      "value": "//dev.theluxuryhut.com/shop/product/rolex-submariner-date-bluesy-40-blue-dial-116613lb-2020"
+    }
+  ]
+}
+```
+
+- `status` must be `"SUCCESS"` to trigger the message.
+- `template_name` must match your approved template on WATI (`WATI_TEMPLATE_1` or `WATI_TEMPLATE_2`).
+- The request body dynamically adjusts to match the required parameters for the selected template.
+
+---
+
+## 🧪 Testing cURL Example (Template- order_details)
+
+```bash
+curl --location 'http://localhost:3333/api/send-message' \
+--header 'Content-Type: application/json' \
+--data '{
+  "name": "Dibakar Chakraborty",
+  "orderNumber": "123455",
+  "phoneNumber": "919293949596",
+  "productUrl": "https://dev.theluxuryhut.com/shop/product/rolex-submariner-date-bluesy-40-blue-dial-116613lb-2020",
+  "status": "SUCCESS",
+  "template_name": "order_details",
+  "parameters": [
+    { "name": "name", "value": "Dibakar Chakraborty" },
+    { "name": "order_number", "value": "Your Order Number 123455" },
+    { "name": "wc_adv_shipment", "value": "hShipment-number-1234566890" },
+    {
+      "name": "order_status_url_partial_variable",
+      "value": "//dev.theluxuryhut.com/shop/product/rolex-submariner-date-bluesy-40-blue-dial-116613lb-2020"
+    }
+  ]
+}'
+```
 ---
 
 ## Response
@@ -150,6 +220,25 @@ curl -X POST http://localhost:3333/api/send-message -H "Content-Type: applicatio
 
 ---
 
+## 🧰 Tech Stack
+
+- **Node.js** + **Express**
+- **TypeScript**
+- **DDD (Domain-Driven Design)**
+- **WATI WhatsApp Business API**
+- **dotenv** for config management
+- **Axios** for HTTP requests
+
+---
+
+## 👨‍🔧 Developer Notes
+
+- If order status is not `SUCCESS`, no message will be sent.
+- Easily extendable to support new WATI templates.
+- Clean interface-driven structure makes it testable and modular.
+
+---
+
 ## 📜 License
 
 MIT © 2025 – Developed for [The Luxury Hut](https://www.theluxuryhut.com/)
@@ -162,5 +251,3 @@ If you need enhancements or want to contribute:
 
 - Fork the repo
 - Raise an issue or PR
-
----
