@@ -219,7 +219,7 @@ curl --location 'http://localhost:3333/api/send-message' \
 ```
 
 ---
-
+```json
 ## Wati Curl
 
 curl --location 'https://live-mt-server.wati.io/your-tenant-id/api/v2/sendTemplateMessage?whatsappNumber=+919623231123' \
@@ -243,7 +243,7 @@ curl --location 'https://live-mt-server.wati.io/your-tenant-id/api/v2/sendTempla
         }
     ]
 }'
-
+```
 ---
 
 ## 🧰 Tech Stack
