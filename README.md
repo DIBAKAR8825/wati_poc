@@ -50,7 +50,7 @@ wati_project/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/wati_project.git
+git clone https://github.com/DIBAKAR8825/wati_poc.git
 cd wati_project
 ```
 
@@ -217,6 +217,32 @@ curl --location 'http://localhost:3333/api/send-message' \
   "message": "Message not sent. Order status is 'FAIL'."
 }
 ```
+
+---
+
+## Wati Curl
+
+curl --location 'https://live-mt-server.wati.io/your-tenant-id/api/v2/sendTemplateMessage?whatsappNumber=+919623231123' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eiOiJtdC1wcm9kLVRlbmFudHMiLCJodHRwOi8vc.aWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBRE1JTklTVFJBVE9SIiwiZXhwIjoyNTM0MDIzMDA4MDAsImlzcyI6IkNsYXJlX0FJIiwiYXVkIjoiQ2xhcmVfQUkif.YgVBVmaa4' \
+--data '{
+    "template_name": "order_placed_successful",
+    "broadcast_name": "order_placed_successful",
+    "parameters": [
+        {
+            "name": "name",
+            "value": "Dibakar Chakraborty"
+        },
+        {
+            "name": "order_number",
+            "value": "Your Order Number 123455"
+        },
+        {
+            "name": "order_status_url_partial_variable",
+            "value": "https://dev.theluxuryhut.com/shop/product/rolex-submariner-date-bluesy-40-blue-dial-116613lb-2020"
+        }
+    ]
+}'
 
 ---
 
